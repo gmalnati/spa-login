@@ -1,1 +1,46 @@
-spring.application.name=spa-login
+spring:
+  application:
+    name: spa-login
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: spring1
+            client-secret: MGjJlK7944gNOVQwWBf18Ehwbhh14A6o
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - offline_access
+        provider:
+          keycloak:
+            issuer-uri: ${IAM_URL}
+            user-name-attribute: preferred_username
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: service1
+            uri: ${SERVICE1_URL}
+            predicates:
+              - Path=/api/service1/**
+            filters:
+              - RewritePath=/api/service1/(?<segment>.*), /${segment}
+              - TokenRelay=
+              - SetResponseHeader=Route-Matched, service1
+          - id: ui
+            uri: ${UI_URL}
+            predicates:
+              - Path=/ui/**
+            filters:
+              - RewritePath=/ui/(?<segment>.*), /ui/${segment}
+              - AddRequestHeader=X-Debug, true
+              - SetResponseHeader=Route-Matched, ui
+
+UI_URL: "http://localhost:4173"
+SERVICE1_URL: "http://localhost:8081"
+IAM_URL: "http://localhost:9090/realms/spring"
