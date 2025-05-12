@@ -15,7 +15,8 @@ class HomeController {
     }
 
     @GetMapping("/serverLogin")
-    fun login() {
+    fun login(httpServletResponse: HttpServletResponse) {
+        httpServletResponse.sendRedirect("/ui")
     }
 
     @GetMapping("/me")

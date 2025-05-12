@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController
 class Service1Controller {
 
     @GetMapping("")
-    fun home(): String {
-        return "Hello from Service 1"
+    fun home(): Map<String, Any> {
+        return mapOf("message" to "Hello from Service 1")
     }
 
     @GetMapping("method1")

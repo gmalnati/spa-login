@@ -26,6 +26,31 @@ function Service1Method1() {
         </div>
     )
 }
+function Service1Root() {
+    const [data, setData] = useState<Record<string,unknown>>({loading: false, data: null, error: null})
+    const loadData = () => {
+        setData({loading: true, data: null, error: null})
+        fetch('/api/service1/')
+            .then(res => res.json())
+            .then(data => setData({loading: false, data, error: null}))
+            .catch(error => setData({loading: false, data: null, error}))
+    };
+    return (
+        <div>
+            <h2>Service 1 - Root</h2>
+            {
+                data.loading? <div>Loading...</div>:
+                    data.error? <div>Error: {(data.error as Error).message}</div>:
+                        data.data?
+                            <div style={{textAlign: 'left'}}>
+                                <pre>{JSON.stringify(data.data, null, 2)}</pre>
+                                <button onClick={loadData}>Reload</button>
+                            </div>:
+                            <button onClick={loadData}>Load</button>
+            }
+        </div>
+    )
+}
 
 function LogoutButton() {
     return (
@@ -80,11 +105,17 @@ function App() {
         <UserContext value={me}>
             <AnonymousContent>
                 <LoginButton/>
+                <hr/>
+                <Service1Root/>
+                <Service1Method1/>
             </AnonymousContent>
             <UserContent>
-                <UserDetails/>
-                <Service1Method1/>
                 <LogoutButton/>
+                <hr/>
+                <UserDetails/>
+                <hr/>
+                <Service1Root/>
+                <Service1Method1/>
             </UserContent>
         </UserContext>
     )
