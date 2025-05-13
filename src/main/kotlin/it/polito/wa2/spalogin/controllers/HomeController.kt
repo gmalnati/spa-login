@@ -3,6 +3,7 @@ package it.polito.wa2.spalogin.controllers
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
+import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -20,15 +21,19 @@ class HomeController {
     }
 
     @GetMapping("/me")
-    fun me(authentication: Authentication?): Map<String, Any> {
+    fun me(authentication: Authentication?, csrfToken: CsrfToken?): Map<String, Any?> {
         if (authentication!=null) {
             val user = authentication.principal as OidcUser
             return mapOf(
                 "name" to user.preferredUsername,
                 "userInfo" to user.userInfo,
+                "csrf" to csrfToken?.token,
             )
         } else {
-            return mapOf("error" to "User not authenticated")
+            return mapOf(
+                "error" to "User not authenticated",
+                "csrf" to csrfToken?.token,
+            )
         }
     }
 }

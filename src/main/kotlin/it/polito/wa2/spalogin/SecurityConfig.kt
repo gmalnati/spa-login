@@ -21,6 +21,7 @@ class SecurityConfig {
                 it.failureUrl("/ui?error=login")
             }
             .csrf {
+                //it.disable()
                 it.ignoringRequestMatchers("/logout")
             }
             .logout {

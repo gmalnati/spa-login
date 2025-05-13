@@ -16,6 +16,7 @@ class SecurityConfig {
         httpSecurity
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/").permitAll()
+                auth.requestMatchers("/method2").permitAll()
                 auth.anyRequest().authenticated()
             }
             .oauth2ResourceServer { it.jwt {  } }

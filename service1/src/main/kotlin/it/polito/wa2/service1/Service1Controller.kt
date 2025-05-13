@@ -3,6 +3,7 @@ package it.polito.wa2.service1
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -22,6 +23,11 @@ class Service1Controller {
             "user" to (authentication.principal) as Jwt,
             "authorities" to authentication.authorities.map { it.authority }
         )
+    }
+
+    @PostMapping("method2")
+    fun method2(): Map<String, Any> {
+        return mapOf("message" to "Hello from Service 1 method2")
     }
 
 }

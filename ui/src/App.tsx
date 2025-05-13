@@ -26,6 +26,32 @@ function Service1Method1() {
         </div>
     )
 }
+function Service1Method2() {
+    const me = useContext(UserContext)
+    const [data, setData] = useState<Record<string,unknown>>({loading: false, data: null, error: null})
+    const loadData = () => {
+        setData({loading: true, data: null, error: null})
+        fetch('/api/service1/method2', {method: 'POST', headers: {'X-CSRF-TOKEN': me.csrf as string},body:""})
+            .then(res => res.json())
+            .then(data => setData({loading: false, data, error: null}))
+            .catch(error => setData({loading: false, data: null, error}))
+    };
+    return (
+        <div>
+            <h2>Service 1 - Method 2</h2>
+        {
+            data.loading? <div>Loading...</div>:
+            data.error? <div>Error: {(data.error as Error).message}</div>:
+            data.data?
+                <div style={{textAlign: 'left'}}>
+                    <pre>{JSON.stringify(data.data, null, 2)}</pre>
+                    <button onClick={loadData}>Reload</button>
+                </div>:
+            <button onClick={loadData}>Load</button>
+        }
+        </div>
+    )
+}
 function Service1Root() {
     const [data, setData] = useState<Record<string,unknown>>({loading: false, data: null, error: null})
     const loadData = () => {
@@ -108,6 +134,7 @@ function App() {
                 <hr/>
                 <Service1Root/>
                 <Service1Method1/>
+                <Service1Method2/>
             </AnonymousContent>
             <UserContent>
                 <LogoutButton/>
@@ -116,6 +143,7 @@ function App() {
                 <hr/>
                 <Service1Root/>
                 <Service1Method1/>
+                <Service1Method2/>
             </UserContent>
         </UserContext>
     )
