@@ -4,11 +4,20 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.SecurityFilterChain
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig {
+class SecurityConfig(val crr: ClientRegistrationRepository) {
+
+
+
+    fun oidcLogoutSuccessHandler() = OidcClientInitiatedLogoutSuccessHandler(crr).also {
+        it.setPostLogoutRedirectUri("{baseUrl}/ui?logout")
+    }
+
     @Bean
     fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
         httpSecurity
@@ -22,12 +31,10 @@ class SecurityConfig {
             }
             .csrf {
                 //it.disable()
-                it.ignoringRequestMatchers("/logout")
+                //it.ignoringRequestMatchers("/logout")
             }
             .logout {
-                it.clearAuthentication(true)
-                it.invalidateHttpSession(true)
-                it.logoutSuccessHandler { _, response, _ -> response.sendRedirect("/ui?logout") }
+                it.logoutSuccessHandler(oidcLogoutSuccessHandler())
             }
 
         return httpSecurity.build()

@@ -21,18 +21,18 @@ class HomeController {
     }
 
     @GetMapping("/me")
-    fun me(authentication: Authentication?, csrfToken: CsrfToken?): Map<String, Any?> {
+    fun me(authentication: Authentication?, csrfToken: CsrfToken): Map<String, Any?> {
         if (authentication!=null) {
             val user = authentication.principal as OidcUser
             return mapOf(
                 "name" to user.preferredUsername,
                 "userInfo" to user.userInfo,
-                "csrf" to csrfToken?.token,
+                "csrf" to csrfToken.token,
             )
         } else {
             return mapOf(
                 "error" to "User not authenticated",
-                "csrf" to csrfToken?.token,
+                "csrf" to csrfToken.token,
             )
         }
     }

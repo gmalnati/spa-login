@@ -79,8 +79,10 @@ function Service1Root() {
 }
 
 function LogoutButton() {
+    const me = useContext(UserContext)
     return (
         <form action="/logout" method="post">
+            <input type="hidden" name="_csrf" value={me.csrf as string} />
             <button type="submit">Logout</button>
         </form>
     )

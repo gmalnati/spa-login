@@ -15,7 +15,6 @@ spring:
             scope:
               - openid
               - profile
-              - offline_access
         provider:
           keycloak:
             issuer-uri: ${IAM_URL}
